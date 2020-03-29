@@ -1,0 +1,36 @@
+commit abe0d9421f2bc6227360f9420aeac2cefbcdc023
+Author:     Stephen Burgess <stephenburgess8@gmail.com>
+AuthorDate: Wed May 17 08:59:43 GMT+08:00 2017
+Commit:     Eugen Rochko <eugen@zeonfederated.com>
+CommitDate: Wed May 17 08:59:43 GMT+08:00 2017
+
+    Catch import promise in application.js (#3041)
+    
+    * fix(polyfil): Catch error from promise
+    
+    https://pouchdb.com/2015/05/18/we-have-a-problem-with-promises.html
+    
+    * fix(catch): Error
+    
+    Make import promise catch a noop with commented out console.log for a debugging hint.
+    
+    * fix(eslint): Disable eslint console rule
+    
+    * fix(application): Use console error
+    
+
+diff --git a/app/javascript/packs/application.js b/app/javascript/packs/application.js
+index 06f47b6..ea5b9f8 100644
+--- a/app/javascript/packs/application.js
++++ b/app/javascript/packs/application.js
+@@ -3,7 +3,9 @@
+ if (!window.Intl || !Object.assign || !Number.isNaN ||
+     !window.Symbol || !Array.prototype.includes) {
+   // load polyfills dynamically
+-  import('../mastodon/polyfills').then(main);
++  import('../mastodon/polyfills').then(main).catch(e => {
++    console.error(e) // eslint-disable-line no-console
++  });
+ } else {
+   main();
+ }
